@@ -14,7 +14,7 @@ class clustercontrol::params {
 
   case $facts['osfamily'] {
     'RedHat': {
-      if ($facts['os']['release']['major'] > 6) {
+      if ($facts['os']['release']['major'] + 0 ) > 6 {
         $mysql_packages   = ['mariadb','mariadb-server']
         $mysql_service    = 'mariadb'
         $cc_dependencies  = [
