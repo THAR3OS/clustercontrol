@@ -269,6 +269,14 @@ class clustercontrol (
             File[$::clustercontrol::params::cert_file,$clustercontrol::params::key_file, $clustercontrol::params::apache_ssl_conf_file],
           ],
         }
+      } else {
+        Package <| title == $package |> {
+          ensure => 'installed',
+          notify => [
+            Exec['allow-override-all'],
+            File[$::clustercontrol::params::cert_file,$clustercontrol::params::key_file, $clustercontrol::params::apache_ssl_conf_file],
+          ],
+        }
       }
     }
 
