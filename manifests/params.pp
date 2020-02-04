@@ -18,13 +18,37 @@ class clustercontrol::params {
         $mysql_packages   = ['mariadb','mariadb-server']
         $mysql_service    = 'mariadb'
         $cc_dependencies  = [
-          'httpd', 'wget', 'mailx', 'cronie', 'nmap-ncat', 'bind-utils', 'curl', 'php', 'php-mysql', 'php-gd', 'php-ldap', 'mod_ssl', 'openssl',
+          'httpd',
+          'wget',
+          'mailx',
+          'cronie',
+          'nmap-ncat',
+          'bind-utils',
+          'curl',
+          'php',
+          'php-mysql',
+          'php-gd',
+          'php-ldap',
+          'mod_ssl',
+          'openssl',
         ]
       } else {
         $mysql_packages   = ['mysql','mysql-server']
         $mysql_service    = 'mysqld'
         $cc_dependencies  = [
-          'httpd', 'wget', 'mailx', 'cronie', 'nc', 'bind-utils', 'curl', 'php', 'php-mysql', 'php-gd', 'php-ldap', 'mod_ssl', 'openssl',
+          'httpd',
+          'wget',
+          'mailx',
+          'cronie',
+          'nc',
+          'bind-utils',
+          'curl',
+          'php',
+          'php-mysql',
+          'php-gd',
+          'php-ldap',
+          'mod_ssl',
+          'openssl',
         ]
       }
       $apache_conf_file = '/etc/httpd/conf/httpd.conf'
