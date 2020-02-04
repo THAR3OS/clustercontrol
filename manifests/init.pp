@@ -34,8 +34,8 @@
 # @param mysql_cmon_port
 #   port for mysql (defaults to '3306')
 # @param modulepath
-#   path to the puppet module on the node with an ending '/'
-#   (default: /etc/puppetlabs/code/environments/production/modules/clustercontrol/)
+#   path to the puppet module on the puppet server
+#   (default: "${facts['puppet_environmentpath']}/${server_facts['environment']}/modules/clustercontrol/")
 # @param datadir
 #   directory for the database (default: /var/lib/mysql)
 # @param use_repo
@@ -59,7 +59,7 @@ class clustercontrol (
   $mysql_cmon_root_password = 'password',
   $mysql_cmon_password      = 'cmon',
   $mysql_cmon_port          = '3306',
-  $modulepath               = '/etc/puppetlabs/code/environments/production/modules/clustercontrol/',
+  $modulepath               = "${facts['puppet_environmentpath']}/${server_facts['environment']}/modules/clustercontrol",
   $datadir                  = '/var/lib/mysql',
   $use_repo                 = true,
   $enabled                  = true,
