@@ -13,7 +13,7 @@ class clustercontrol::params {
   $cmon_sql_path    = '/usr/share/cmon'
 
   case $facts['os']['osfamily'] {
-    'Redhat': {
+    'RedHat': {
       if ($facts['os']['release']['major'] > 6) {
         $mysql_packages   = ['mariadb','mariadb-server']
         $mysql_service    = 'mariadb'
