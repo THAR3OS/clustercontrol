@@ -34,7 +34,6 @@ class clustercontrol::params {
           'clustercontrol-ssh',
           'clustercontrol-cloud',
           'clustercontrol-clud',
-          's9s-tools',
         ]
       } else {
         $mysql_packages   = ['mysql','mysql-server']
@@ -56,7 +55,6 @@ class clustercontrol::params {
           'clustercontrol-ssh',
           'clustercontrol-cloud',
           'clustercontrol-clud',
-          's9s-tools',
         ]
       }
       $apache_conf_file = '/etc/httpd/conf/httpd.conf'
