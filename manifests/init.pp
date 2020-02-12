@@ -63,7 +63,7 @@ class clustercontrol (
   $datadir                  = '/var/lib/mysql',
   $use_repo                 = true,
   $enabled                  = true,
-) inherits ::clustercontrol::params {
+) {
 
   if $enabled {
     $service_status = 'running'
