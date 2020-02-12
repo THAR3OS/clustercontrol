@@ -81,7 +81,7 @@ class clustercontrol::params {
         mode    => '0644',
         owner   => 'root',
         group   => 'root',
-        require => Package[$cc_ui],
+#       require => Package[$cc_ui],
         notify  => Service[$apache_service],
       }
 
