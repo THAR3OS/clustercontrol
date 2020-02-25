@@ -9,7 +9,7 @@
 # @param ip_address
 #   own ipaddress (defaults to $::ipaddress)
 # @param api_token
-#   apitoken created by 
+#   apitoken created by
 #   bash '/etc/puppet/modules/clustercontrol/files/s9s_helper.sh --generate-token'
 # @param ssh_user
 #   user used by the ssh command (defaults to root)
@@ -42,6 +42,10 @@
 #   use severalnines repo (default: true)
 # @param enabled
 #    enable system services (default: true)
+# @param http_ssl_cert_file
+#   alternative ssl certificate file for webserver (default: undef, use shipped certificate)
+# @param http_ssl_key_file
+#   alternative ssl key file for webserver (default: undef, use shipped key)
 #
 class clustercontrol (
   $is_controller            = true,
@@ -63,6 +67,8 @@ class clustercontrol (
   $datadir                  = '/var/lib/mysql',
   $use_repo                 = true,
   $enabled                  = true,
+  $http_ssl_cert_file       = undef,
+  $http_ssl_key_file        = undef,
 ) {
 
   if $enabled {
@@ -240,15 +246,23 @@ class clustercontrol (
 #     ensure => file
 #   }*/
 
+    $http_ssl_cert_file_source = $http_ssl_cert_file ? {
+      undef   => "${::clustercontrol::params::wwwroot}/clustercontrol/ssl/server.crt",
+      default => $http_ssl_cert_file,
+    }
     file { $::clustercontrol::params::cert_file:
       ensure  => 'present',
-      source  => "${::clustercontrol::params::wwwroot}/clustercontrol/ssl/server.crt",
+      source  => $http_ssl_cert_file_source,
       require => Package[$clustercontrol::params::cc_ui],
     }
 
+    $http_ssl_key_file_source = $http_ssl_key_file ? {
+      undef   => "${::clustercontrol::params::wwwroot}/clustercontrol/ssl/server.key",
+      default => $http_ssl_key_file,
+    }
     file { $::clustercontrol::params::key_file:
       ensure  => 'present',
-      source  => "${::clustercontrol::params::wwwroot}/clustercontrol/ssl/server.key",
+      source  => $http_ssl_key_file_source,
       require => Package[$::clustercontrol::params::cc_ui],
     }
 
