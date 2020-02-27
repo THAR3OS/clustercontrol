@@ -416,7 +416,7 @@ class clustercontrol (
 #   }*/
 
     exec { 'configure-cc-bootstrap':
-      command => "sed -i 's|DBPASS|${mysql_cmon_password}|g' ${::clustercontrol::params::wwwroot}/clustercontrol/bootstrap.php && sed -i 's|DBPORT|${mysql_cmon_port}|g' ${::clustercontrol::params::wwwroot}/clustercontrol/bootstrap.php",
+      command => "sed -i 's|DBPASS|${mysql_cmon_password}|g' ${::clustercontrol::params::wwwroot}/clustercontrol/bootstrap.php && sed -i 's|DBPORT|${mysql_cmon_port}|g' ${::clustercontrol::params::wwwroot}/clustercontrol/bootstrap.php && sed -i \"s|//define('ENABLE_ONBOARDING_V1', 'true');|define('ENABLE_ONBOARDING_V1', 'false');|g\" ${::clustercontrol::params::wwwroot}/clustercontrol/bootstrap.php && sed -i \"s|//define('ENABLE_PRIVACY', true);|define('ENABLE_PRIVACY', true);|g\" ${::clustercontrol::params::wwwroot}/clustercontrol/bootstrap.php ",
       notify  => Service[$::clustercontrol::params::apache_service],
     }
 
