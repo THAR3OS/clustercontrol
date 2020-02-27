@@ -378,13 +378,24 @@ class clustercontrol (
       ],
     }
 
-#   /*file { "$clustercontrol::params::wwwroot/cmonapi/config/database.php" :
-#     ensure  => present,
-#     content  => template('clustercontrol/database.php.erb'),
-#     require => Package["$clustercontrol::params::cc_cmonapi"]
-#   }
+    file { "${::clustercontrol::params::wwwroot}/cmonapi/config/bootstrap.php":
+      ensure  => 'present',
+      replace => no,
+      source  => "${::clustercontrol::params::wwwroot}/cmonapi/config/bootstrap.php.default",
+      require => Package[$::clustercontrol::params::cc_ui],
+      notify  => [
+        Exec['configure-cmonapi-api-bootstrap'],
+      ],
+    }
 
-#   file { "${::clustercontrol::params::wwwroot}/clustercontrol/bootstrap.php":
+    file { "${clustercontrol::params::wwwroot}/cmonapi/config/database.php":
+      ensure  => present,
+      content => template('clustercontrol/database.php.erb'),
+      require => Package[$clustercontrol::params::cc_cmonapi]
+    }
+
+#
+#   /*file { "${::clustercontrol::params::wwwroot}/clustercontrol/bootstrap.php":
 #     ensure  => 'present',
 #     replace => no,
 #     source  => "${::clustercontrol::params::wwwroot}/clustercontrol/bootstrap.php.default",
@@ -411,6 +422,10 @@ class clustercontrol (
 
     exec { 'configure-cmonapi-bootstrap':
       command => "sed -i 's|RPCTOKEN|${api_token}|g' ${::clustercontrol::params::wwwroot}/clustercontrol/bootstrap.php && sed -i 's|clustercontrol.severalnines.com|${::ip_address}\/clustercontrol|g' ${::clustercontrol::params::wwwroot}/clustercontrol/bootstrap.php",
+    }
+
+    exec { 'configure-cmonapi-api-bootstrap':
+      command => "sed -i 's|GENERATED_CMON_TOKEN|${api_token}|g' ${::clustercontrol::params::wwwroot}/cmonapi/config/bootstrap.php && sed -i 's|clustercontrol.severalnines.com|${::ip_address}\/clustercontrol|g' ${::clustercontrol::params::wwwroot}/cmonapi/config/bootstrap.php",
     }
 
     exec { 'allow-override-all':

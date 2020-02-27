@@ -8,6 +8,7 @@ class clustercontrol::params {
   $cc_cloud = 'clustercontrol-cloud'
   $cc_clud = 'clustercontrol-clud'
   $cc_ssh = 'clustercontrol-ssh'
+  $cc_api = 'clustercontrol-cmonapi'
   $cc_notif = 'clustercontrol-notifications'
   $cmon_conf = '/etc/cmon.cnf'
   $cmon_sql_path    = '/usr/share/cmon'
@@ -32,6 +33,7 @@ class clustercontrol::params {
           'openssl',
           'clustercontrol-notifications',
           'clustercontrol-ssh',
+          'clustercontrol-cmonapi',
           'clustercontrol-cloud',
           'clustercontrol-clud',
         ]
@@ -53,6 +55,7 @@ class clustercontrol::params {
           'openssl',
           'clustercontrol-notifications',
           'clustercontrol-ssh',
+          'clustercontrol-cmonapi',
           'clustercontrol-cloud',
           'clustercontrol-clud',
         ]
@@ -155,6 +158,7 @@ class clustercontrol::params {
         'php-json',
         'clustercontrol-notifications',
         'clustercontrol-ssh',
+        'clustercontrol-cmonapi',
         'clustercontrol-cloud',
         'clustercontrol-clud',
         's9s-tools',
