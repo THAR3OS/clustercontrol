@@ -119,14 +119,6 @@ class clustercontrol (
       subscribe  => File[$clustercontrol::params::mysql_cnf],
     }
 
-#   /*file { $clustercontrol::params::mysql_cnf :
-#     ensure   => present,
-#     content  => template('clustercontrol/my.cnf.erb'),
-#     owner    => root,
-#     group => root,
-#     mode     => '0644'
-#   }*/
-
     package { $clustercontrol::params::mysql_packages :
       ensure => installed,
       notify => Exec['disable-extra-security'],
@@ -141,6 +133,14 @@ class clustercontrol (
         'grant-cmon-ip-address',
         'grant-cmon-fqdn'
       ]
+    }
+
+    file { '/root/.my.cnf':
+      ensure  => 'file',
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0400',
+      content => template('clustercontrol/_my.cnf.erb'),
     }
 
     file { $clustercontrol::params::mysql_cnf :
