@@ -201,12 +201,13 @@ class clustercontrol (
     }
 
     exec { 'configure-cmon-db':
-      onlyif  => [
+      onlyif      => [
         "test -f ${clustercontrol::params::cmon_sql_path}/cmon_db.sql",
         "test -f ${clustercontrol::params::cmon_sql_path}/cmon_data.sql"
       ],
-      command => "mysql -f -u root -p\"${mysql_cmon_root_password}\" cmon < /tmp/configure_cmon_db.sql",
-      require => File['/tmp/configure_cmon_db.sql'],
+      command     => "mysql -f -u root -p\"${mysql_cmon_root_password}\" cmon < /tmp/configure_cmon_db.sql",
+      require     => File['/tmp/configure_cmon_db.sql'],
+      refreshonly => true,
     }
 
     file { '/tmp/configure_cmon_db.sql' :
@@ -215,7 +216,7 @@ class clustercontrol (
     }
 
     exec { 'import-dcps-db':
-      onlyif  => [ 
+      onlyif  => [
         "test -f ${::clustercontrol::params::wwwroot}/clustercontrol/sql/dc-schema.sql",
         "test ! -f ${::clustercontrol::params::wwwroot}/clustercontrol/sql/import-dcps-db",
       ],
@@ -224,8 +225,9 @@ class clustercontrol (
     }
 
     exec { 'create-dcps-api':
-      onlyif  => "mysql -u root -p\"${mysql_cmon_root_password}\" -e 'SHOW SCHEMAS LIKE \"dcps\";' 2>/dev/null",
-      command => "mysql -u root -p\"${mysql_cmon_root_password}\" -e 'REPLACE INTO dcps.apis(id, company_id, user_id, url, token) VALUES (1, 1, 1, \"http://127.0.0.1/cmonapi\", \"${api_token}\");'",
+      onlyif      => "mysql -u root -p\"${mysql_cmon_root_password}\" -e 'SHOW SCHEMAS LIKE \"dcps\";' 2>/dev/null",
+      command     => "mysql -u root -p\"${mysql_cmon_root_password}\" -e 'REPLACE INTO dcps.apis(id, company_id, user_id, url, token) VALUES (1, 1, 1, \"http://127.0.0.1/cmonapi\", \"${api_token}\");'",
+      refreshonly => true,
     }
 
     file { $datadir :
@@ -423,16 +425,19 @@ class clustercontrol (
 #   }*/
 
     exec { 'configure-cc-bootstrap':
-      command => "sed -i 's|DBPASS|${mysql_cmon_password}|g' ${::clustercontrol::params::wwwroot}/clustercontrol/bootstrap.php && sed -i 's|DBPORT|${mysql_cmon_port}|g' ${::clustercontrol::params::wwwroot}/clustercontrol/bootstrap.php && sed -i \"s|//define('ENABLE_ONBOARDING_V1', 'true');|define('ENABLE_ONBOARDING_V1', 'false');|g\" ${::clustercontrol::params::wwwroot}/clustercontrol/bootstrap.php && sed -i \"s|//define('ENABLE_PRIVACY', true);|define('ENABLE_PRIVACY', true);|g\" ${::clustercontrol::params::wwwroot}/clustercontrol/bootstrap.php ",
-      notify  => Service[$::clustercontrol::params::apache_service],
+      command     => "sed -i 's|DBPASS|${mysql_cmon_password}|g' ${::clustercontrol::params::wwwroot}/clustercontrol/bootstrap.php && sed -i 's|DBPORT|${mysql_cmon_port}|g' ${::clustercontrol::params::wwwroot}/clustercontrol/bootstrap.php && sed -i \"s|//define('ENABLE_ONBOARDING_V1', 'true');|define('ENABLE_ONBOARDING_V1', 'false');|g\" ${::clustercontrol::params::wwwroot}/clustercontrol/bootstrap.php && sed -i \"s|//define('ENABLE_PRIVACY', true);|define('ENABLE_PRIVACY', true);|g\" ${::clustercontrol::params::wwwroot}/clustercontrol/bootstrap.php ",
+      notify      => Service[$::clustercontrol::params::apache_service],
+      refreshonly => true,
     }
 
     exec { 'configure-cmonapi-bootstrap':
-      command => "sed -i 's|RPCTOKEN|${api_token}|g' ${::clustercontrol::params::wwwroot}/clustercontrol/bootstrap.php && sed -i 's|clustercontrol.severalnines.com|${::ip_address}\/clustercontrol|g' ${::clustercontrol::params::wwwroot}/clustercontrol/bootstrap.php",
+      command     => "sed -i 's|RPCTOKEN|${api_token}|g' ${::clustercontrol::params::wwwroot}/clustercontrol/bootstrap.php && sed -i 's|clustercontrol.severalnines.com|${::ip_address}\/clustercontrol|g' ${::clustercontrol::params::wwwroot}/clustercontrol/bootstrap.php",
+      refreshonly => true,
     }
 
     exec { 'configure-cmonapi-api-bootstrap':
-      command => "sed -i 's|GENERATED_CMON_TOKEN|${api_token}|g' ${::clustercontrol::params::wwwroot}/cmonapi/config/bootstrap.php && sed -i 's|clustercontrol.severalnines.com|${::ip_address}\/clustercontrol|g' ${::clustercontrol::params::wwwroot}/cmonapi/config/bootstrap.php",
+      command     => "sed -i 's|GENERATED_CMON_TOKEN|${api_token}|g' ${::clustercontrol::params::wwwroot}/cmonapi/config/bootstrap.php && sed -i 's|clustercontrol.severalnines.com|${::ip_address}\/clustercontrol|g' ${::clustercontrol::params::wwwroot}/cmonapi/config/bootstrap.php",
+      refreshonly => true,
     }
 
     exec { 'allow-override-all':
