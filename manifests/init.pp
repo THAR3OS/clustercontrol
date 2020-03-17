@@ -165,9 +165,9 @@ class clustercontrol (
     }
 
     exec { 'grant-cmon-ip-address':
-      unless  => "mysqladmin -u cmon -p\"${mysql_cmon_password}\" -h\"${::ip_address}\" status",
+      unless  => "mysqladmin -u cmon -p\"${mysql_cmon_password}\" -h\"${::ipaddress}\" status",
       path    => $::path,
-      command => "mysql -u root -p\"${mysql_cmon_root_password}\" -e 'GRANT ALL PRIVILEGES ON *.* TO cmon@\"${::ip_address}\" IDENTIFIED BY \"${mysql_cmon_password}\" WITH GRANT OPTION; FLUSH PRIVILEGES;'",
+      command => "mysql -u root -p\"${mysql_cmon_root_password}\" -e 'GRANT ALL PRIVILEGES ON *.* TO cmon@\"${::ipaddress}\" IDENTIFIED BY \"${mysql_cmon_password}\" WITH GRANT OPTION; FLUSH PRIVILEGES;'",
     }
 
     exec { 'grant-cmon-fqdn':
@@ -194,8 +194,9 @@ class clustercontrol (
       onlyif  => [
         "test -f ${::clustercontrol::params::cmon_sql_path}/cmon_db.sql",
         "test -f ${::clustercontrol::params::cmon_sql_path}/cmon_data.sql",
+        "test ! -f ${::clustercontrol::params::cmon_sql_path}/import-cmon-db",
       ],
-      command => "mysql -f -u root -p\"${mysql_cmon_root_password}\" cmon < ${clustercontrol::params::cmon_sql_path}/cmon_db.sql && mysql -f -u root -p\"${mysql_cmon_root_password}\" cmon < ${clustercontrol::params::cmon_sql_path}/cmon_data.sql",
+      command => "mysql -f -u root -p\"${mysql_cmon_root_password}\" cmon < ${clustercontrol::params::cmon_sql_path}/cmon_db.sql && mysql -f -u root -p\"${mysql_cmon_root_password}\" cmon < ${clustercontrol::params::cmon_sql_path}/cmon_data.sql && touch ${::clustercontrol::params::cmon_sql_path}/import-cmon-db",
       notify  => Exec['configure-cmon-db'],
     }
 
@@ -214,8 +215,11 @@ class clustercontrol (
     }
 
     exec { 'import-dcps-db':
-      onlyif  => "test -f ${::clustercontrol::params::wwwroot}/clustercontrol/sql/dc-schema.sql",
-      command => "mysql -f -u root -p\"${mysql_cmon_root_password}\" dcps < ${::clustercontrol::params::wwwroot}/clustercontrol/sql/dc-schema.sql",
+      onlyif  => [ 
+        "test -f ${::clustercontrol::params::wwwroot}/clustercontrol/sql/dc-schema.sql",
+        "test ! -f ${::clustercontrol::params::wwwroot}/clustercontrol/sql/import-dcps-db",
+      ],
+      command => "mysql -f -u root -p\"${mysql_cmon_root_password}\" dcps < ${::clustercontrol::params::wwwroot}/clustercontrol/sql/dc-schema.sql && touch ${::clustercontrol::params::wwwroot}/clustercontrol/sql/import-dcps-db",
       notify  => Exec['create-dcps-api'],
     }
 
