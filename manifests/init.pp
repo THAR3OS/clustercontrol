@@ -153,36 +153,39 @@ class clustercontrol (
     }
 
     exec { 'grant-cmon-localhost':
-      unless  => "mysqladmin -u cmon -p \"${mysql_cmon_password}\" -hlocalhost status",
+      unless  => "mysqladmin -u cmon -p\"${mysql_cmon_password}\" -hlocalhost status",
+      path    => $::path,
       command => "mysql -u root -p\"${mysql_cmon_root_password}\" -e 'GRANT ALL PRIVILEGES ON *.* TO cmon@localhost IDENTIFIED BY \"${mysql_cmon_password}\" WITH GRANT OPTION; FLUSH PRIVILEGES;'",
     }
 
     exec { 'grant-cmon-127.0.0.1':
-      unless  => "mysqladmin -u cmon -p \"${mysql_cmon_password}\" -h127.0.0.1 status",
+      unless  => "mysqladmin -u cmon -p\"${mysql_cmon_password}\" -h127.0.0.1 status",
+      path    => $::path,
       command => "mysql -u root -p\"${mysql_cmon_root_password}\" -e 'GRANT ALL PRIVILEGES ON *.* TO cmon@127.0.0.1 IDENTIFIED BY \"${mysql_cmon_password}\" WITH GRANT OPTION; FLUSH PRIVILEGES;'",
     }
 
     exec { 'grant-cmon-ip-address':
-      unless  => "mysqladmin -u cmon -p \"${mysql_cmon_password}\" -h\"${::ip_address}\" status",
+      unless  => "mysqladmin -u cmon -p\"${mysql_cmon_password}\" -h\"${::ip_address}\" status",
+      path    => $::path,
       command => "mysql -u root -p\"${mysql_cmon_root_password}\" -e 'GRANT ALL PRIVILEGES ON *.* TO cmon@\"${::ip_address}\" IDENTIFIED BY \"${mysql_cmon_password}\" WITH GRANT OPTION; FLUSH PRIVILEGES;'",
     }
 
     exec { 'grant-cmon-fqdn':
-      unless  => "mysqladmin -u cmon -p \"${mysql_cmon_password}\" -h\"${::fqdn}\" status",
+      unless  => "mysqladmin -u cmon -p\"${mysql_cmon_password}\" -h\"${::fqdn}\" status",
+      path    => $::path,
       command => "mysql -u root -p\"${mysql_cmon_root_password}\" -e 'GRANT ALL PRIVILEGES ON *.* TO cmon@\"${::fqdn}\" IDENTIFIED BY \"${mysql_cmon_password}\" WITH GRANT OPTION; FLUSH PRIVILEGES;'",
     }
 
-#    /*exec { "create-dcps-api" :
-#     command => "mysql -u root -p\"$mysql_cmon_root_password\" -e 'REPLACE INTO dcps.apis(id, company_id, user_id, url, token) VALUES (1, 1, 1, \"http://127.0.0.1/cmonapi\", \"$api_token\");'",
-#     notify  => Exec['grant-cmon-fqdn']
-#   }*/
-
     exec { 'create-cmon-db':
+      unless  => "mysql -u root -p\"${mysql_cmon_root_password}\" -e 'QUIT' cmon",
+      path    => $::path,
       command => "mysql -u root -p\"${mysql_cmon_root_password}\" -e 'CREATE SCHEMA IF NOT EXISTS cmon;'",
       notify  => Exec['import-cmon-db'],
     }
 
     exec { 'create-dcps-db':
+      unless  => "mysql -u root -p\"${mysql_cmon_root_password}\" -e 'QUIT' dcps",
+      path    => $::path,
       command => "mysql -u root -p\"${mysql_cmon_root_password}\" -e 'CREATE SCHEMA IF NOT EXISTS dcps;'",
       notify  => Exec['import-dcps-db'],
     }
