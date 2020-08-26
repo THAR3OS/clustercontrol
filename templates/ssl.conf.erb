@@ -72,6 +72,10 @@ SSLCryptoDevice builtin
 
 <VirtualHost _default_:443>
 
+# ClusterControl SSE
+RewriteEngine On
+RewriteRule ^/clustercontrol/sse/events/(.*)$ http://127.0.0.1:9510/events/$1 [P,L]
+
 # General setup for the virtual host, inherited from global configuration
 #DocumentRoot "/var/www/html"
 #ServerName www.example.com:443
